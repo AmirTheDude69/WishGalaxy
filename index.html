@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wish Galaxy - Make a Wish Upon Your Star</title>
+  <meta name="description" content="Create your own star in the cosmic galaxy and make a wish.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-glow"></div>
+  <canvas id="twinkle"></canvas>
+
+  <button id="addStarBtn" class="glass-btn">✧&nbsp; Add Star</button>
+  <div id="loadingHint">○ Loading</div>
+  <div id="starCount">0 stars in the galaxy</div>
+
+  <div id="starsLayer"></div>
+
+  <div id="modalBackdrop" class="hidden"></div>
+  <section id="modal" class="hidden">
+    <button id="closeModal" class="close">×</button>
+    <div class="steps"><span class="on"></span><span></span><span></span></div>
+
+    <h2 id="modalTitle">Draw Your Star</h2>
+
+    <div id="step1" class="step on">
+      <canvas id="drawCanvas" width="380" height="280"></canvas>
+      <div class="palette">
+        <button data-color="#f2a8d8" style="--c:#f2a8d8" class="color on"></button>
+        <button data-color="#8ca3be" style="--c:#8ca3be" class="color"></button>
+        <button data-color="#829f81" style="--c:#829f81" class="color"></button>
+        <button data-color="#9d9700" style="--c:#9d9700" class="color"></button>
+        <button data-color="#a8a8a8" style="--c:#a8a8a8" class="color"></button>
+      </div>
+      <label>SIZE <input id="sizeSlider" type="range" min="2" max="18" value="6"></label>
+      <div class="actions"><button id="undoBtn">Undo</button><button id="continue1" class="primary">Continue</button></div>
+    </div>
+
+    <div id="step2" class="step">
+      <label class="wish-label">Your private wish
+        <textarea id="wishInput" maxlength="220" placeholder="Write a wish only you can see..."></textarea>
+      </label>
+      <div class="actions"><button id="back2">Back</button><button id="continue2" class="primary">Continue</button></div>
+    </div>
+
+    <div id="step3" class="step">
+      <p>Click anywhere in the galaxy to place your star.</p>
+      <div class="actions"><button id="back3">Back</button><button id="saveStar" class="primary">Place Star</button></div>
+    </div>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
