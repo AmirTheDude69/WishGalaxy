@@ -13,12 +13,14 @@
 <body>
   <div class="bg-glow"></div>
   <canvas id="twinkle"></canvas>
+  <div id="shootingStars"></div>
 
   <button id="addStarBtn" class="glass-btn">✧&nbsp; Add Star</button>
   <div id="loadingHint">○ Loading</div>
   <div id="starCount">0 stars in the galaxy</div>
 
   <div id="starsLayer"></div>
+  <div id="aimIndicator" class="hidden"></div>
 
   <div id="modalBackdrop" class="hidden"></div>
   <section id="modal" class="hidden">
@@ -28,28 +30,63 @@
     <h2 id="modalTitle">Draw Your Star</h2>
 
     <div id="step1" class="step on">
+      <div class="tool-row">
+        <button class="tool on" data-tool="pen">Pen</button>
+        <button class="tool" data-tool="glow">Glow</button>
+        <button class="tool" data-tool="sparkle">Sparkle</button>
+        <button class="tool" data-tool="eraser">Eraser</button>
+      </div>
       <canvas id="drawCanvas" width="380" height="280"></canvas>
       <div class="palette">
         <button data-color="#f2a8d8" style="--c:#f2a8d8" class="color on"></button>
         <button data-color="#8ca3be" style="--c:#8ca3be" class="color"></button>
-        <button data-color="#829f81" style="--c:#829f81" class="color"></button>
-        <button data-color="#9d9700" style="--c:#9d9700" class="color"></button>
+        <button data-color="#6fe8b4" style="--c:#6fe8b4" class="color"></button>
+        <button data-color="#6dc2ff" style="--c:#6dc2ff" class="color"></button>
+        <button data-color="#b2a4ff" style="--c:#b2a4ff" class="color"></button>
+        <button data-color="#ffd166" style="--c:#ffd166" class="color"></button>
+        <button data-color="#f97070" style="--c:#f97070" class="color"></button>
         <button data-color="#a8a8a8" style="--c:#a8a8a8" class="color"></button>
+        <label class="color-picker">
+          Custom
+          <input id="customColor" type="color" value="#f2a8d8">
+        </label>
       </div>
       <label>SIZE <input id="sizeSlider" type="range" min="2" max="18" value="6"></label>
       <div class="actions"><button id="undoBtn">Undo</button><button id="continue1" class="primary">Continue</button></div>
     </div>
 
     <div id="step2" class="step">
-      <label class="wish-label">Your private wish
-        <textarea id="wishInput" maxlength="220" placeholder="Write a wish only you can see..."></textarea>
+      <div class="wish-preview">
+        <img id="wishPreview" alt="Wish preview">
+      </div>
+      <label class="wish-label">Star name
+        <input id="nameInput" maxlength="40" placeholder="Name your star...">
+      </label>
+      <label class="wish-label">Wish description
+        <textarea id="wishInput" maxlength="260" placeholder="Share the story behind your star..."></textarea>
       </label>
       <div class="actions"><button id="back2">Back</button><button id="continue2" class="primary">Continue</button></div>
     </div>
 
     <div id="step3" class="step">
-      <p>Click anywhere in the galaxy to place your star.</p>
-      <div class="actions"><button id="back3">Back</button><button id="saveStar" class="primary">Place Star</button></div>
+      <div class="launch-preview">
+        <img id="launchPreview" alt="Your drawing preview">
+        <p>Click anywhere in the galaxy to choose where your wish will land. Then launch it.</p>
+      </div>
+      <div class="actions"><button id="back3">Back</button><button id="saveStar" class="primary">Launch Star</button></div>
+    </div>
+  </section>
+
+  <div id="detailBackdrop" class="hidden"></div>
+  <section id="detailModal" class="hidden">
+    <button id="detailClose" class="close">×</button>
+    <div class="detail-art">
+      <img id="detailImage" alt="Wish drawing">
+    </div>
+    <p id="detailWish"></p>
+    <div class="detail-meta">
+      <span id="detailName"></span>
+      <span id="detailDate"></span>
     </div>
   </section>
 
