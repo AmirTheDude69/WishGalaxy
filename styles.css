@@ -8,7 +8,9 @@ body.aiming #starsLayer { pointer-events: none; }
 #shootingStars { pointer-events: none; }
 .star { position: absolute; border: 0; background: transparent; opacity: .95; padding: 0; pointer-events: auto; transform: translate(-50%, -50%); animation: float var(--float-dur, 14s) ease-in-out infinite; }
 .star img { width: 100%; height: 100%; display: block; filter: drop-shadow(0 0 8px var(--glow, #b6bad1)) drop-shadow(0 0 16px var(--glow, #b6bad1)); }
-.glass-btn { position: fixed; top: 16px; left: 16px; z-index: 3; border: 1px solid #ffffff22; background: #1a1b31aa; color: #ddd; border-radius: 8px; padding: 10px 16px; font-size: 30px; line-height: 1; cursor: pointer; }
+.top-actions { position: fixed; top: 16px; left: 16px; z-index: 3; display: flex; gap: 10px; align-items: center; }
+.glass-btn { border: 1px solid #ffffff22; background: #1a1b31aa; color: #ddd; border-radius: 8px; padding: 8px 12px; font-size: 22px; line-height: 1; cursor: pointer; }
+.icon-btn { width: 34px; height: 34px; display: inline-grid; place-items: center; font-size: 16px; padding: 0; }
 #loadingHint { position: fixed; top: 22px; left: 50%; transform: translateX(-50%); color: #aaabc3; opacity: .8; }
 #starCount { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); color: #8f90b0; }
 #modalBackdrop { position: fixed; inset: 0; background: #0008; backdrop-filter: blur(4px); z-index: 9; }
@@ -51,6 +53,20 @@ input[type=text], #nameInput { margin-top: 8px; width: 100%; border-radius: 12px
 .detail-art img { width: 120px; height: 120px; object-fit: contain; filter: drop-shadow(0 0 12px #ffffff66) drop-shadow(0 0 26px #67c3ff66); }
 #detailWish { font-size: 18px; line-height: 1.5; color: #f1f2ff; margin: 8px 0 18px; }
 .detail-meta { display: flex; justify-content: center; gap: 12px; font-size: 12px; color: #9aa2bd; }
+.detail-status { margin-top: 8px; font-size: 12px; color: #aab3cf; text-transform: uppercase; letter-spacing: 0.14em; }
+.detail-actions { margin-top: 16px; display: flex; justify-content: center; gap: 10px; }
+.note-area { margin-top: 18px; text-align: left; }
+.note-area textarea { min-height: 90px; }
+
+#archiveBackdrop { position: fixed; inset: 0; background: #0008; backdrop-filter: blur(6px); z-index: 11; }
+#archiveModal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(92vw, 520px); max-height: min(80vh, 560px); overflow: hidden; background: #06070ff2; border: 1px solid #ffffff1a; border-radius: 26px; padding: 28px; z-index: 12; }
+.archive-sub { font-size: 12px; color: #9aa2bd; margin-top: -8px; }
+.archive-list { margin-top: 16px; display: grid; gap: 12px; max-height: min(60vh, 420px); overflow: auto; padding-right: 6px; }
+.archive-card { display: grid; grid-template-columns: 60px 1fr; gap: 12px; padding: 12px; border-radius: 16px; border: 1px solid #ffffff1c; background: #0b0d1d; }
+.archive-card img { width: 56px; height: 56px; object-fit: contain; filter: drop-shadow(0 0 10px #6aa2ff55); }
+.archive-title { font-weight: 600; font-size: 14px; color: #f1f2ff; }
+.archive-meta { font-size: 11px; color: #98a1ba; margin-top: 4px; }
+.archive-note { font-size: 12px; color: #c2c8dd; margin-top: 8px; line-height: 1.4; }
 
 .shooting-star { position: fixed; width: 140px; height: 2px; background: linear-gradient(90deg, #ffffff00, #ffffffcc, #ffffff00); filter: drop-shadow(0 0 12px #e8f2ff); opacity: 0; z-index: 2; animation: shoot 1.4s ease-out forwards; }
 .launch-ghost { position: fixed; pointer-events: none; z-index: 20; filter: drop-shadow(0 0 12px #ffffff88) drop-shadow(0 0 26px #63c6ff88); }

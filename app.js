@@ -16,6 +16,13 @@ const detailImage = document.getElementById('detailImage');
 const detailWish = document.getElementById('detailWish');
 const detailName = document.getElementById('detailName');
 const detailDate = document.getElementById('detailDate');
+const detailStatus = document.getElementById('detailStatus');
+const detailActions = document.getElementById('detailActions');
+const noteArea = document.getElementById('noteArea');
+const noteInput = document.getElementById('noteInput');
+const archiveBackdrop = document.getElementById('archiveBackdrop');
+const archiveModal = document.getElementById('archiveModal');
+const archiveList = document.getElementById('archiveList');
 
 let stars = JSON.parse(localStorage.getItem(storageKey) || '[]');
 let drawing = [];
@@ -24,6 +31,8 @@ let size = 6;
 let tool = 'pen';
 let pendingPoint = null;
 let pendingDrawing = null;
+let currentStar = null;
+let pendingStatus = null;
 
 function randomBetween(min, max) {
   return min + Math.random() * (max - min);
@@ -64,9 +73,12 @@ function normalizeStar(star) {
   normalized.createdAt = star.createdAt || new Date().toISOString();
   normalized.code = star.code || generateCode();
   normalized.glow = star.glow || star.color || '#cdd6ff';
-  normalized.floatX = star.floatX ?? randomBetween(-16, 16);
-  normalized.floatY = star.floatY ?? randomBetween(-16, 16);
-  normalized.floatDur = star.floatDur ?? randomBetween(10, 18);
+  normalized.status = star.status || 'active';
+  normalized.note = star.note || '';
+  normalized.archivedAt = star.archivedAt || '';
+  normalized.floatX = typeof star.floatX === 'number' ? star.floatX * 1.6 : randomBetween(-26, 26);
+  normalized.floatY = typeof star.floatY === 'number' ? star.floatY * 1.6 : randomBetween(-26, 26);
+  normalized.floatDur = typeof star.floatDur === 'number' ? Math.max(6, star.floatDur * 0.65) : randomBetween(6, 10);
 
   if (!normalized.artSmall) {
     const legacy = createLegacyArt(normalized.glow, star.size || 32);
@@ -88,7 +100,7 @@ stars = stars.map(normalizeStar);
 function renderStars() {
   starsLayer.innerHTML = '';
 
-  stars.forEach((star) => {
+  stars.filter((star) => star.status === 'active').forEach((star) => {
     const el = document.createElement('button');
     el.className = 'star';
     el.type = 'button';
@@ -118,15 +130,18 @@ function renderStars() {
     starsLayer.appendChild(el);
   });
 
-  starCount.textContent = `${stars.length} stars in the galaxy`;
+  const activeCount = stars.filter((star) => star.status === 'active').length;
+  starCount.textContent = `${activeCount} stars in the galaxy`;
 }
 
 function save() {
   localStorage.setItem(storageKey, JSON.stringify(stars));
   renderStars();
+  renderArchive();
 }
 
 renderStars();
+renderArchive();
 loadingHint.textContent = '○ Ready';
 setTimeout(() => loadingHint.remove(), 1200);
 
@@ -214,6 +229,14 @@ function openDetail(star) {
   detailWish.textContent = star.wish;
   detailName.textContent = `${star.name} - ${star.code}`;
   detailDate.textContent = formatDate(star.createdAt);
+  detailStatus.textContent = star.status === 'active'
+    ? ''
+    : `${star.status.toUpperCase()}${star.note ? ` · ${star.note}` : ''}`;
+  detailActions.classList.toggle('hidden', star.status !== 'active');
+  noteArea.classList.add('hidden');
+  noteInput.value = star.note || '';
+  pendingStatus = null;
+  currentStar = star;
   detailBackdrop.classList.remove('hidden');
   detailModal.classList.remove('hidden');
 }
@@ -221,15 +244,100 @@ function openDetail(star) {
 function closeDetail() {
   detailBackdrop.classList.add('hidden');
   detailModal.classList.add('hidden');
+  noteArea.classList.add('hidden');
+  pendingStatus = null;
+  currentStar = null;
+}
+
+function renderArchive() {
+  if (!archiveList) return;
+  const archived = stars.filter((star) => star.status !== 'active');
+  if (!archived.length) {
+    archiveList.innerHTML = '';
+    const empty = document.createElement('p');
+    empty.className = 'archive-sub';
+    empty.textContent = 'No archived wishes yet.';
+    archiveList.appendChild(empty);
+    return;
+  }
+  archiveList.innerHTML = '';
+  archived.forEach((star) => {
+    const card = document.createElement('div');
+    card.className = 'archive-card';
+
+    const img = document.createElement('img');
+    img.src = star.artSmall;
+    img.alt = '';
+    card.appendChild(img);
+
+    const content = document.createElement('div');
+    const title = document.createElement('div');
+    title.className = 'archive-title';
+    title.textContent = star.name;
+    const meta = document.createElement('div');
+    meta.className = 'archive-meta';
+    meta.textContent = `${star.status.toUpperCase()} • ${formatDate(star.archivedAt || star.createdAt)}`;
+    const wish = document.createElement('div');
+    wish.className = 'archive-note';
+    wish.textContent = star.wish;
+    content.appendChild(title);
+    content.appendChild(meta);
+    content.appendChild(wish);
+    if (star.note) {
+      const note = document.createElement('div');
+      note.className = 'archive-note';
+      note.textContent = `Note: ${star.note}`;
+      content.appendChild(note);
+    }
+    card.appendChild(content);
+    archiveList.appendChild(card);
+  });
+}
+
+function openArchive() {
+  renderArchive();
+  archiveBackdrop.classList.remove('hidden');
+  archiveModal.classList.remove('hidden');
+}
+
+function closeArchive() {
+  archiveBackdrop.classList.add('hidden');
+  archiveModal.classList.add('hidden');
 }
 
 document.getElementById('addStarBtn').onclick = openModal;
+document.getElementById('archiveBtn').onclick = openArchive;
 document.getElementById('closeModal').onclick = closeModal;
 backdrop.onclick = () => {
   if (!document.body.classList.contains('aiming')) closeModal();
 };
 document.getElementById('detailClose').onclick = closeDetail;
 detailBackdrop.onclick = closeDetail;
+document.getElementById('archiveClose').onclick = closeArchive;
+archiveBackdrop.onclick = closeArchive;
+
+document.getElementById('fulfillBtn').onclick = () => {
+  pendingStatus = 'fulfilled';
+  noteInput.placeholder = 'Add a note about your fulfilled wish...';
+  noteArea.classList.remove('hidden');
+};
+document.getElementById('removeBtn').onclick = () => {
+  pendingStatus = 'removed';
+  noteInput.placeholder = 'Add a note about why you removed it...';
+  noteArea.classList.remove('hidden');
+};
+document.getElementById('noteCancel').onclick = () => {
+  noteArea.classList.add('hidden');
+  pendingStatus = null;
+};
+document.getElementById('noteSave').onclick = () => {
+  if (!currentStar || !pendingStatus) return;
+  currentStar.status = pendingStatus;
+  currentStar.note = noteInput.value.trim();
+  currentStar.archivedAt = new Date().toISOString();
+  save();
+  closeDetail();
+};
 
 const drawCanvas = document.getElementById('drawCanvas');
 const drawCtx = drawCanvas.getContext('2d');
@@ -492,7 +600,7 @@ function refreshPreviews() {
 document.addEventListener('pointerdown', (evt) => {
   if (!stepEls[2].classList.contains('on')) return;
   if (modal.contains(evt.target)) return;
-  if (evt.target.closest('#addStarBtn')) return;
+  if (evt.target.closest('#addStarBtn') || evt.target.closest('#archiveBtn')) return;
   const x = (evt.clientX / innerWidth) * 100;
   const y = (evt.clientY / innerHeight) * 100;
   pendingPoint = { x, y };
@@ -565,9 +673,9 @@ function buildStar() {
     artW: prepared.small.w,
     artH: prepared.small.h,
     displaySize: prepared.displaySize,
-    floatX: randomBetween(-16, 16),
-    floatY: randomBetween(-16, 16),
-    floatDur: randomBetween(10, 18),
+    floatX: randomBetween(-26, 26),
+    floatY: randomBetween(-26, 26),
+    floatDur: randomBetween(6, 10),
   };
 }
 

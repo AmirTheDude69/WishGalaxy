@@ -15,7 +15,10 @@
   <canvas id="twinkle"></canvas>
   <div id="shootingStars"></div>
 
-  <button id="addStarBtn" class="glass-btn">✧&nbsp; Add Star</button>
+  <div class="top-actions">
+    <button id="addStarBtn" class="glass-btn">✧&nbsp; Add Star</button>
+    <button id="archiveBtn" class="glass-btn icon-btn" aria-label="Archive">⟡</button>
+  </div>
   <div id="loadingHint">○ Loading</div>
   <div id="starCount">0 stars in the galaxy</div>
 
@@ -88,6 +91,28 @@
       <span id="detailName"></span>
       <span id="detailDate"></span>
     </div>
+    <div id="detailStatus" class="detail-status"></div>
+    <div id="detailActions" class="detail-actions">
+      <button id="fulfillBtn">Fulfilled</button>
+      <button id="removeBtn">Remove</button>
+    </div>
+    <div id="noteArea" class="note-area hidden">
+      <label>Add a note
+        <textarea id="noteInput" maxlength="220" placeholder="Optional note..."></textarea>
+      </label>
+      <div class="actions">
+        <button id="noteCancel">Cancel</button>
+        <button id="noteSave" class="primary">Save</button>
+      </div>
+    </div>
+  </section>
+
+  <div id="archiveBackdrop" class="hidden"></div>
+  <section id="archiveModal" class="hidden">
+    <button id="archiveClose" class="close">×</button>
+    <h2>Archived Wishes</h2>
+    <p class="archive-sub">Fulfilled and removed stars with notes.</p>
+    <div id="archiveList" class="archive-list"></div>
   </section>
 
   <script src="app.js"></script>
